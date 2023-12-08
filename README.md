@@ -10,6 +10,8 @@ This project is a web application built with Dash, a Python framework for buildi
 
 ## How to Run
 
+First you need to request your Google data at: https://takeout.google.com/?continue=https://myaccount.google.com/dashboard. You need to request the Searches in the MyActivity Dataset in JSON Format and unzip it. 
+
 To run this application, you need to have Python and Dash installed. You can then clone this repository and run `app.py`.
 
 ```bash
