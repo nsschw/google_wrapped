@@ -13,7 +13,7 @@ This project is a web application built with Dash, a Python framework for buildi
 To run this application, you need to have Python and Dash installed. You can then clone this repository and run `app.py`.
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/nsschw/google_wrapped/
 cd <repository-name>
 python app.py
 ```
