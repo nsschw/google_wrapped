@@ -6,9 +6,7 @@ import diskcache
 
 
 cache = diskcache.Cache("./cache")
-long_callback_manager = DiskcacheLongCallbackManager(cache)
-
-                    
+long_callback_manager = DiskcacheLongCallbackManager(cache)                  
 
 
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP, 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'], long_callback_manager=long_callback_manager)
@@ -79,7 +77,7 @@ app.layout = html.Div([
      running = [(Output("submit-button", "disabled"), True, False)],
      prevent_initial_call=True,
     )
-def update_output(n_clicks, path, language, from_date, until_date):
+def update_output(n_clicks, path = "MyActivity.json", language="en", from_date = "2010-01-01", until_date="2025-01-01"):
      
      # load data
      data_processor = DataProcessor(path, lang=language, from_date=from_date, until_date=until_date)     
@@ -102,6 +100,7 @@ def update_output(n_clicks, path, language, from_date, until_date):
      dbc.Row([dcc.Graph(figure=data_processor.searches_per_week(), config={"displayModeBar": False})], class_name="results"),   
      dbc.Row([dcc.Graph(figure=data_processor.searches_heatmap(fill_nan=True), config={"displayModeBar": False})], class_name="results"),
      dbc.Row([dcc.Graph(figure=data_processor.searched_most(n=20), config={"displayModeBar": False})], class_name="results"),
+     dbc.Row([dcc.Graph(figure=data_processor.search_locations(), config={"displayModeBar": False})], class_name="results"),
      ]
 
      return results

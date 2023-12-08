@@ -2,6 +2,7 @@ import pandas as pd
 from dateutil import parser
 import plotly.graph_objects as go
 import numpy as np
+import re
 
 class DataProcessor:    
     def __init__(self, dataset_path, **kwargs):
@@ -101,7 +102,7 @@ class DataProcessor:
             title="Searches per hour and day",
             yaxis={'title':'Hours','categoryarray': order_of_hours, 'autorange':'reversed', },
             xaxis={'title':'Day of Week'},
-            margin=dict(l=5, r=5, t=45, b=5),
+            margin=dict(l=5, r=5, t=35, b=5),
             paper_bgcolor="#F7F7F7",
             plot_bgcolor="#F7F7F7",
             xaxis_showgrid=False,
@@ -135,7 +136,7 @@ class DataProcessor:
             title="Most searched Terms",
             xaxis_title="Searches",
             yaxis_title="Term",
-            margin=dict(l=5, r=5, t=45, b=5),
+            margin=dict(l=5, r=5, t=35, b=5),
             paper_bgcolor="#F7F7F7",
             plot_bgcolor="#F7F7F7",
             xaxis_showgrid=False,
@@ -166,7 +167,7 @@ class DataProcessor:
             title="Number of Searches per Week",
             xaxis_title="Week",
             yaxis_title="Searches",
-            margin=dict(l=5, r=5, t=45, b=5),
+            margin=dict(l=5, r=5, t=35, b=5),
             paper_bgcolor="#F7F7F7",
             plot_bgcolor="#F7F7F7",
             xaxis_showgrid=False,
@@ -181,5 +182,59 @@ class DataProcessor:
             
         )
         return fig
+
+
+    def search_locations(self) -> go.Figure():
+        df = self.df_searches.copy()
+        df = df.dropna(subset=["locationInfos"]).reset_index(drop=True)
+
+        pattern = r"center=([-+]?\d*\.\d+|\d+),([-+]?\d*\.\d+|\d+)"       
+
+        for i in range(len(df["locationInfos"])):            
+            if df["locationInfos"][i][0]["url"]:
+                url = df["locationInfos"][i][0].get("url") 
+                match = re.search(pattern, url)        
+            if match:
+                latitude, longitude = match.groups()
+                df.loc[i, "latitude"] = latitude
+                df.loc[i, "longitude"] = longitude
         
+        df = df.dropna(subset=["latitude", "longitude"]).reset_index(drop=True)
         
+        df["latitude"] = df["latitude"].astype(float)
+        df["longitude"] = df["longitude"].astype(float)
+
+        fig = go.Figure(go.Scattermapbox(
+            lat=df["latitude"],
+            lon=df["longitude"],
+            mode='markers',
+            marker=go.scattermapbox.Marker(
+                size=14
+            ),
+            text=df["title"],
+        ))
+
+        fig.update_layout(
+            title="Searched from",
+            margin=dict(l=5, r=5, t=35, b=5),
+            paper_bgcolor="#F7F7F7",
+            plot_bgcolor="#F7F7F7",
+            xaxis_showgrid=False,
+            yaxis_showgrid=False,            
+            font_family="Arial",
+            font_color="#333333",
+            title_x=0.5,
+            title_y=0.99,
+            title_xanchor='center',
+            title_yanchor='top',
+            font_size=12,
+            mapbox_style="open-street-map",
+            mapbox=dict(
+                center=go.layout.mapbox.Center(
+                    lat=51.1657,
+                    lon=10.4515
+                ),
+                zoom=4
+            ),
+        )
+        return fig
