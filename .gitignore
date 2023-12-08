@@ -1,0 +1,6 @@
+/venv
+/data
+LottasActivity.json
+MeineAktivitäten.json
+/__pycache__
+/cache
