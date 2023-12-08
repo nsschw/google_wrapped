@@ -215,7 +215,7 @@ class DataProcessor:
         ))
 
         fig.update_layout(
-            title="Searched from",
+            title="Search Locations",
             margin=dict(l=5, r=5, t=35, b=5),
             paper_bgcolor="#F7F7F7",
             plot_bgcolor="#F7F7F7",
